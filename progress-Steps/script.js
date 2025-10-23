@@ -5,56 +5,40 @@ const circles = document.querySelectorAll('.circle');
 
 let currentActive = 1;
 
-let width = 0;
-next.addEventListener('click', (e) => {
+next.addEventListener('click', () => {
 	currentActive++;
-	let increaseProgress = 33;
 
-	circles.forEach((btn) => {
-		if (btn.textContent.includes(currentActive)) {
-			addActiveClass(btn);
-			width += increaseProgress;
-			progress.style.width = width + '%';
-			console.log(width);
-			if (currentActive >= 2) {
-				prev.disabled = false;
-			}
-			console.log(currentActive);
-			if (btn.textContent == 4) {
-				next.disabled = true;
-			}
-		}
-		if (btn.textContent == 1) {
-			addActiveClass(btn);
-		}
-	});
+	if (currentActive > circles.length) currentActive = circles.length;
+	update();
 });
 
-prev.addEventListener('click', (e) => {
+prev.addEventListener('click', () => {
 	currentActive--;
-	let decreaseProgress = 33;
-	circles.forEach((btn) => {
-		if (btn.textContent.includes(currentActive)) {
-			removeActiveClass(btn);
-			width -= decreaseProgress;
-			progress.style.width = width + '%';
-			if (currentActive == 1) {
-				prev.disabled = true;
-			}
-			console.log(currentActive);
-			if (btn.textContent < 4) {
-				next.disabled = false;
-			}
-		}
-		if (btn.textContent == 4) {
-			removeActiveClass(btn);
-		}
-	});
+
+	if (currentActive < 1) currentActive = 1;
+	update();
 });
 
-function addActiveClass(elem) {
-	elem.classList.add('active');
-}
-function removeActiveClass(elem) {
-	elem.classList.remove('active');
+function update() {
+	circles.forEach((circle, idx) => {
+		console.log(circle);
+		console.log(idx);
+		if (idx < currentActive) {
+			circle.classList.add('active');
+		} else {
+			circle.classList.remove('active');
+		}
+	});
+	const actives = document.querySelectorAll('.active');
+	progress.style.width =
+		((actives.length - 1) / (circles.length - 1)) * 100 + '%';
+
+	if (currentActive === 1) {
+		prev.disabled = true;
+	} else if (currentActive === circles.length) {
+		next.disabled = true;
+	} else {
+		prev.disabled = false;
+		next.disabled = false;
+	}
 }
